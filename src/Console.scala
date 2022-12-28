@@ -70,19 +70,17 @@ class Console() {
         val number = numberValue.toInt
         val stringObjectBuilder = new StringObjectBuilder
         var factory: ObjectFactory = null
+        var start: Long = System.currentTimeMillis()
         for (i <- 0 until number) {
           hash.put(new IntObjectBuilder().create, stringObjectBuilder.create)
-          try hash1 = hash.clone
-          catch {
-            case ex: CloneNotSupportedException =>
-              throw new RuntimeException(ex)
-          }
           factory = new ObjectFactory(stringObjectBuilder)
           factory.objectRecorder(stringObjectBuilder)
         }
         factory.getBuilderByName("String")
         // увеличение хэш-таблицы
-        hash = hash.resizeHash(hash, hash1, number)
+        hash = hash.resizeHash(hash, number)
+        val time = System.currentTimeMillis() - start
+        println("Время: " + time)
       }
     })
     val jIDGetLable = new JLabel("ID: ")
@@ -155,7 +153,6 @@ class Console() {
   }
 
   class MyVectorDialog() extends JDialog(jFrame, "Vector Console", true) {
-    hash = new Hash(size = 10)
     val jNumberLable = new JLabel("Number: ")
     add(jNumberLable, BorderLayout.BEFORE_FIRST_LINE)
     val jNumberTextField = new JTextField(20)
@@ -170,18 +167,16 @@ class Console() {
         val numberValue = jNumberTextField.getText
         val number = numberValue.toInt
         var factory: ObjectFactory = null
+        var start: Long = System.currentTimeMillis()
         for (i <- 0 until number) {
           hash.put(new IntObjectBuilder().create, vector2D.create)
-          try hash1 = hash.clone
-          catch {
-            case ex: CloneNotSupportedException =>
-              throw new RuntimeException(ex)
-          }
           factory = new ObjectFactory(vector2D)
           factory.objectRecorder(vector2D)
         }
         factory.getBuilderByName("Vector2D")
-        hash = hash.resizeHash(hash, hash1, number)
+        hash = hash.resizeHash(hash, number)
+        val time = System.currentTimeMillis() - start
+        println("Время: " + time)
       }
     })
     val jIDGetLable = new JLabel("ID: ")

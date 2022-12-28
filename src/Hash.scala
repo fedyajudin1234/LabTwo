@@ -1,14 +1,14 @@
 import java.util
-import java.util.{ArrayList, Collections}
+import java.util._
 import scala.collection.mutable
 
 class Hash(var size: Int) extends IHash with Cloneable {
-  //var iterations = 0;
-  //var hash: Hash
-  //var array1 = new Array[Hash#Entry](_length = size)
+  var start: Long = System.currentTimeMillis()
   var stringLengthCounter: Int = 0
   var currValue: Int = 0
   var totalValue: Int = 0
+  var maxValue: Int = 0
+  var time: Long = 0
   class Entry(var key: Any, var value: Any) {
     var next: Hash#Entry = null
 
@@ -39,7 +39,6 @@ class Hash(var size: Int) extends IHash with Cloneable {
     array = new Array[Hash#Entry](this.size)
   }
   override def put(key: Any, value: Any): Unit = {
-    //array1 = array
     val hash: Int = key.hashCode % size
     var e = array(hash)
     if (e == null) array(hash) = new Entry(key, value)
@@ -72,17 +71,6 @@ class Hash(var size: Int) extends IHash with Cloneable {
     }
     null
   }
-  /*def copyOut(): Unit ={
-    for (i <- 0 until size) {
-      array1(i) = array(i)
-    }
-  }*/
-
-  /*def copyIn(): Unit = {
-    for (i <- 0 until size) {
-      array(i) = array1(i)
-    }
-  }*/
   def remove(key: Any): Hash#Entry = {
     val hash: Int = key.hashCode % size
     var e: Hash#Entry = array(hash)
@@ -134,21 +122,19 @@ class Hash(var size: Int) extends IHash with Cloneable {
       while ( {
         e != null
       }) {
-        stringLengthCounter += 1
+        currValue += 1
         e = e.next
-        currValue = stringLengthCounter
       }
       arrayList.add(currValue)
       middleValue += currValue
-      //System.out.println(arrayList);
-      stringLengthCounter = 0
-      //System.out.println("Итерация: " + i);
     }
     val min = Collections.min(arrayList)
     val max = Collections.max(arrayList)
     middleValue = middleValue / size
     totalValue = (max - min) - middleValue
+    maxValue = max
     System.out.println("----------------------------------------------------------------------------------")
+    System.out.println("Размер: " + size)
     System.out.println("Минимальное значение: " + min)
     System.out.println("Максимальное значение: " + max)
     System.out.println("Среднее значение: " + middleValue)
@@ -173,16 +159,17 @@ class Hash(var size: Int) extends IHash with Cloneable {
     hash
   }
 
-  def resizeHash(hash: Hash, hash1: Hash, number: Int): Hash = {
-    var newHash= hash
+  def resizeHash(hash: Hash, number: Int): Hash = {
+    var newHash = hash
     newHash.sizeRecorder()
-      while(newHash.currValue > newHash.totalValue){
+    if(hash.maxValue > hash.totalValue){
+      newHash = hash.clone
+      while (newHash.maxValue > newHash.totalValue) {
         newHash.size = newHash.size * 2
         newHash = new Hash(newHash.size)
-        for (i <- 0 until number) {
-          newHash = hash1.insert(newHash)
-        }
+        newHash = hash.insert(newHash)
         newHash.sizeRecorder()
+      }
     }
     newHash
   }

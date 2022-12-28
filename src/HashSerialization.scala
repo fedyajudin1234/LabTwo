@@ -1,6 +1,4 @@
 import java.io.{BufferedReader, FileInputStream, FileReader, IOException, ObjectInputStream, PrintWriter}
-import scala.util.control.Breaks
-import scala.util.control.Breaks.break
 
 class HashSerialization {
   @throws[IOException]
@@ -36,12 +34,5 @@ class HashSerialization {
         throw new RuntimeException(e)
     } finally if (br != null) br.close()
   }
-    /*val fileInputStream = new FileInputStream("C:\\Users\\Username\\Desktop\\save.ser")
-    val objectInputStream = new ObjectInputStream(fileInputStream)
 
-    val savedGame = objectInputStream.readObject.asInstanceOf[Nothing]
-
-    System.out.println(savedGame)
-
-    objectInputStream.close()*/
 }
